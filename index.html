@@ -268,34 +268,264 @@ snake_3 = snake_1 + snake_2
 ```
 ---
 # Class methods
+```ruby
+  class Snake
+    def self.description
+      'SNAAAAKESSS'
+    end
+  end
+
+  class Snake
+    class << self
+      def normal_description
+        'Snakes are elongated, legless, carnivorous reptiles of the suborder Serpentes' \
+        'that can be distinguished from legless lizards by their lack of eyelids and external ears.'
+      end
+    end
+  end
+
+  Snake.description # => 'SNAAAAKESSS'
+  Snake.normal_description # => 'Snakes ...'
+```
 ---
 # Class variables
+```ruby
+  class Snake
+    @@count = 0
+
+    def initialize
+      @@count += 1
+    end
+
+    def all_count
+      @@count
+    end
+  end
+  Snake.new.all_count # => 1
+  Snake.new.all_count # => 2
+```
 ---
 # Class instance variables
+```ruby
+  class Snake
+    @count = 0
+    def self.add
+      @count += 1
+    end
+    def initialize
+      self.class.add
+    end
+    def all_count
+      @count
+    end
+    def self.count
+      @count
+    end
+  end
+  snake = Snake.new
+  # Oops..
+  snake.all_count # => nil
+  Snake.count # => 1
+```
+
 ---
 # Class constants
+```ruby
+  class Snake
+    NORMAL_LENGTH = 2
+  end
+
+  Snake::NORMAL_LENGTH # => 2
+
+  Snake::NORMAL_COLOR = '#6B554A'
+  Snake::NORMAL_COLOR # => '#6B554A'
+
+  Snake::NORMAL_COLOR = '#2D2D2D' # => warning: already initialized constant Snake::NORMAL_COLOR
+  Snake::NORMAL_COLOR # => '#2D2D2D'
+```
 ---
-# Visibility
-## private
+# Visibility private
+```ruby
+  class Snake
+    attr_reader :length
+
+    private
+
+    def initialize
+      set_defaults
+    end
+
+    def set_defaults
+      @length = 2
+    end
+  end
+
+  snake = Snake.new
+  snake.length # => 2
+  snake.set_defaults
+  # NoMethodError: private method `set_defaults'
+  # called for #<Snake:0x00000001d29b90 @length=2>
+```
 ---
-# Visibility
-## protected
+# Visibility protected
+```ruby
+  class Snake
+    def +(other)
+      Snake.new(length + other.length)
+    end
+
+    private
+
+    def initialize(length)
+      @length = length
+    end
+
+    protected
+
+    attr_reader :length
+  end
+```
+---
+# Protected example
+```ruby
+  snake1 = Snake.new(1)
+  snake2 = Snake.new(2)
+
+  snake1 + snake2 # => #<Snake:0x00000001e82d70 @length=3>
+
+  snake1.length
+  # NoMethodError: protected method `length'
+  # called for #<Snake:0x00000001f95028 @length=1>
+
+```
+
+
 ---
 # Inheritance
+
+```ruby
+class Snake
+  attr_reader :length
+  def initialize(length)
+    @length = length
+  end
+end
+
+class LazySnake < Snake
+  def initialize(length)
+    @sleeping = false
+    super
+  end
+  def toggle_sleep
+    @sleeping = !@sleeping
+  end
+  def sleeping?
+    @sleeping
+  end
+end
+```
 ---
-# Inheritance
-## methods
+# Inheritance example
+```ruby
+lazy = LazySnake.new(2)
+lazy.length # => 2
+lazy.sleeping? # => false
+lazy.toggle_sleep
+lazy.sleeping? # => true
+```
 ---
 # Inheritance
 ## super
+```ruby
+class LazySnake < Snake
+  def initialize(length)
+    super(length + 1)
+  end
+end
+
+lazy = LazySnake.new(2)
+lazy.length # => 3
+```
 ---
 # Inheritance
 ## class variables
+```ruby
+class A
+  @@value = 1
+  def self.value
+    @@value
+  end
+end
+A.value # => 1
+
+class B < A
+  @@value = 2
+end
+
+class C < A
+  @@value = 3
+end
+
+B.value # => 3
+```
 ---
 # Inheritance
 ## constants
+```ruby
+class A
+  NUM = 2
+end
+
+class B < A
+end
+
+A::NUM # => 2
+B::NUM # => 2
+
+B::NUM = 3
+
+A::NUM # => 2
+B::NUM # => 3
+```
 ---
-# Singleton methods and eigenclass
+# Singleton methods
+```ruby
+class Snake
+  def Snake.count
+  end
+end
+
+class Snake
+  class << self
+    def count
+    end
+  end
+end
+
+class << Snake
+  def count
+  end
+end
+```
+---
+# Custom behaviour of instance
+```ruby
+snake = Snake.new
+def snake.name
+  "John"
+end
+snake.name # => John
+
+class << snake
+  def name
+    "David"
+  end
+end
+snake.name # => David
+
+another = Snake.new
+another.name # => NoMethodError: undefined method 'name'
+```
 ---
 # Module
 ---
