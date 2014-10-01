@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Awesome Presentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Droid Serif';
+        font-size: 1.5em;
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# OOP in RUBY
+
+---
+
+# Defining a simple class
+
+```ruby
+  class Car
+    # code...
+  end
+
+  AnotherCar = Class.new do
+    # code...
+  end
+```
+
+---
+
+# Creating objects
+
+```ruby
+car = Car.new
+
+car.class # => Car
+
+car.is_a? Car # => true
+
+Car.ancestors
+# => [Car, Object, Kernel, BasicObject]
+
+```
+
+---
+
+# Defining methods
+```ruby
+  class Car
+    def accelerate!
+      @moving = true
+    end
+
+    def stop!
+      @moving = false
+    end
+
+    def moving?
+      @moving
+    end
+  end
+```
+---
+
+# Defining methods
+
+```ruby
+  car = Car.new   # => #<Car:0x00000002033700>
+  car.moving?     # => nil
+  car.accelerate! # => true
+  car.moving?     # => true
+  car.stop!       # => false
+  car.moving?     # => true
+
+  car.inspect
+  # => "#<Car:0x00000002033700 @moving=false>"
+```
+---
+# Initializers
+```ruby
+  class Car
+    def initialize(type)
+     @type = type
+    end
+
+    def big?
+      @type == 'big'
+    end
+  end
+
+  car = Car.new('big')
+
+  car.big? # => true
+```
+---
+# Attributes
+```ruby
+  class Snake
+    def length
+      @meters * 100
+    end
+
+    def length=(santimeters)
+      @meters = santimeters / 100.0
+    end
+  end
+
+  snake = Snake.new
+  snake.length = 150 # => 150
+  snake.length       # => 150.0
+  snake.inspect
+  #=> "#<Snake:0x00000002777930 @meters=1.5>"
+```
+---
+# Attributes
+## attr_accessor
+```ruby
+class Snake
+  def length
+    @length
+  end
+
+  def length=(new_value)
+    @length = new_value
+  end
+end
+
+class Snake
+  attr_accessor :length
+end
+```
+---
+# Attributes
+## attr_reader
+```ruby
+class Snake
+  def length
+    @length
+  end
+end
+
+class Snake
+  attr_reader :length
+end
+```
+---
+# Attributes
+## attr_writer
+```ruby
+class Snake
+  def length=(new_value)
+    @length = new_value
+  end
+end
+
+class Snake
+  attr_writer :length
+end
+```
+---
+# Attributes
+## drawing the line
+```ruby
+class Snake
+  def length # attr_reader, attr_accessor
+    @length
+  end
+
+  def length=(new_value) # attr_writer, attr_accessor
+    @length = new_value
+  end
+end
+```
+---
+# Defining operators
+```ruby
+  class Snake
+    attr_reader :length
+
+    def initialize(length)
+      @length = length
+    end
+
+    def +(other)
+      Snake.new(length + other.length)
+    end
+  end
+```
+```ruby
+snake_1 = Snake.new(1) # => #<Snake:0x00000002f7d878 @length=1>
+snake_2 = Snake.new(2) # => #<Snake:0x00000002f09fe0 @length=2>
+snake_3 = snake_1 + snake_2
+# => #<Snake:0x00000002eb3050 @length=3>
+```
+---
+# Comparation
+```ruby
+  class Snake
+    attr_reader :length
+
+    def initialize(length)
+      @length = length
+    end
+  end
+
+  snake = Snake.new(1) # => #<Snake:0x000000020800c8 @length=1>
+  other_snake = Snake.new(1) # => #<Snake:0x00000001e80ae8 @length=1>
+  snake == other_snake # => false
+```
+---
+# Comparation
+```ruby
+  class Snake
+    attr_reader :length
+
+    def initialize(length)
+      @length = length
+    end
+
+    def ==(other)
+      if other.is_a? Snake
+        length == other.length
+      else
+        false
+      end
+    end
+  end
+
+  snake = Snake.new(1)
+  other_snake = Snake.new(1)
+  snake == other_snake # => true
+```
+---
+# Self
+```ruby
+  class Snake
+    attr_accessor :length
+
+    def initialize
+      length = 1
+    end
+
+    def snake
+      self
+    end
+
+    def length_redefign
+      length # => 1
+      length = 5
+      length # => 5
+      self.length # => 1
+    end
+  end
+```
+---
+# Class methods
+---
+# Class variables
+---
+# Class instance variables
+---
+# Class constants
+---
+# Visibility
+## private
+---
+# Visibility
+## protected
+---
+# Inheritance
+---
+# Inheritance
+## methods
+---
+# Inheritance
+## super
+---
+# Inheritance
+## class variables
+---
+# Inheritance
+## constants
+---
+# Singleton methods and eigenclass
+---
+# Module
+---
+# Module
+## constants
+---
+# Module
+## constants lookup order
+---
+# Include and extend
+---
+# Include and extend differences
+---
+# Method lookup
+---
+# Exceptions
+---
+# Exceptions
+## else, ensure
+---
+# Throw and catch
+
+
+
+    </textarea>
+    <script src="http://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
