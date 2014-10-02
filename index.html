@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Awesome Presentation</title>
+    <title>OOP</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -528,27 +528,180 @@ another.name # => NoMethodError: undefined method 'name'
 ```
 ---
 # Module
+```ruby
+module Speaking
+  def hi
+    puts 'HI!!!'
+  end
+end
+
+class Snake
+  include Speaking
+end
+
+snake = Snake.new
+snake.hi
+# 'HI!!!!'
+```
 ---
-# Module
-## constants
+# Module constants
+```ruby
+module M
+  class C
+    X = 'a constant'
+  end
+  C::X  # => "a constant"
+end
+M::C::X # => "a constant"
+
+module M
+  Y = 'another constant'
+  class C
+    ::M::Y # => "another constant"
+  end
+end
+
+M.constants # => [:C, :Y]
+```
 ---
-# Module
-## constants lookup order
+# Constants lookup order
+```ruby
+module Kernel
+  A = B = C = D = E = F = "from kernel"
+end
+
+A = B = C = D = E = "from toplevel"
+
+class Super
+  A = B = C = D = "from superclass"
+end
+
+module Included
+  A = B = C = "from included module"
+end
+
+module Enclosing
+  A = B = "from enclosing module"
+
+  class Local < Super
+    include Included
+
+    A = "defined locally"
+
+    puts A  # "defined locally"
+    puts B  # "from enclosing module"
+    puts C  # "from included module"
+    puts D  # "from superclass"
+    puts E  # "from toplevel"
+    puts F  # "from kernel"
+  end
+end
+```
 ---
 # Include and extend
+```ruby
+module A
+  def a
+    puts 'a'
+  end
+end
+
+module B
+  def b
+    puts 'b'
+  end
+end
+```
 ---
-# Include and extend differences
+# Include and extend
+```ruby
+class Test
+  include A
+  extend B
+end
+
+test = Test.new
+test.a # 'a'
+
+test.b # NoMethodError
+Test.b # 'b'
+
+test.extend(B)
+test.b # 'b'
+```
 ---
-# Method lookup
+# Include and extend and method lookup
+![Lookup](img/lookup.png)
 ---
 # Exceptions
+```ruby
+begin
+  puts 'I am before the raise.'
+  raise 'An error has occured.'
+  puts 'I am after the raise.'
+rescue
+  puts 'I am rescued.'
+end
+puts 'I am after the begin block.'
+```
+```
+I am before the raise.
+I am rescued.
+I am after the begin block.
+```
+
 ---
-# Exceptions
-## else, ensure
+# Exceptions ensure
+```ruby
+begin
+  raise "A test exception."
+rescue Exception => e
+  puts e.message
+  puts e.backtrace.inspect
+ensure
+  puts "Ensuring execution"
+end
+
+A test exception.
+# ["test.rb:2:in '<main>'"]
+# Ensuring execution
+```
+---
+# Exceptions else
+```ruby
+begin
+  puts "A test exception."
+rescue Exception => e
+  puts e.message
+  puts e.backtrace.inspect
+else
+  puts "Executes if there is no exception"
+ensure
+  puts "Ensuring execution"
+end
+# A test exception.
+# Executes if there is no exception
+# Ensuring execution
+```
 ---
 # Throw and catch
+```ruby
+def try(number)
+  throw :two! if number == 2
+  puts number
+end
 
+catch :two! do
+  try(1)
+  try(2)
+  try(3)
+end
 
+try(4)
+
+# 1
+# 4
+```
 
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
