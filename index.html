@@ -12,9 +12,14 @@
         font-family: 'Droid Serif';
         font-size: 1.5em;
       }
+
       h1, h2, h3 {
         font-family: 'Yanone Kaffeesatz';
         font-weight: normal;
+      }
+
+      .small {
+        font-size: 0.6em;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
     </style>
@@ -39,6 +44,8 @@ class: center, middle
     # code...
   end
 ```
+???
+класс это тоже класс
 
 ---
 
@@ -55,6 +62,10 @@ Car.ancestors
 # => [Car, Object, Kernel, BasicObject]
 
 ```
+???
+откуда у экземпляра пустого класса появились методы?
+___
+даже пустой класс наследуется от базовых классов которые предоставляют базовые методы
 
 ---
 
@@ -84,11 +95,15 @@ Car.ancestors
   car.accelerate! # => true
   car.moving?     # => true
   car.stop!       # => false
-  car.moving?     # => true
+  car.moving?     # => false
 
   car.inspect
   # => "#<Car:0x00000002033700 @moving=false>"
 ```
+???
+inspect - один из стандартных методов (строкое представление обьекта)
+___
+показывает состояние обьекта
 ---
 # Initializers
 ```ruby
@@ -106,6 +121,10 @@ Car.ancestors
 
   car.big? # => true
 ```
+???
+почему мы вызываем new, а определяем initialize?
+
+
 ---
 # Attributes
 ```ruby
@@ -206,6 +225,8 @@ snake_2 = Snake.new(2) # => #<Snake:0x00000002f09fe0 @length=2>
 snake_3 = snake_1 + snake_2
 # => #<Snake:0x00000002eb3050 @length=3>
 ```
+???
+Было бы неплохо еще проверить класс
 ---
 # Comparation
 ```ruby
@@ -221,6 +242,12 @@ snake_3 = snake_1 + snake_2
   other_snake = Snake.new(1) # => #<Snake:0x00000001e80ae8 @length=1>
   snake == other_snake # => false
 ```
+???
+айдишник же разный вот и разные обьeкты
+___
+цифры тоже обьекты.. как они сравниваются?
+___
+показать object_id цифр
 ---
 # Comparation
 ```ruby
@@ -266,6 +293,8 @@ snake_3 = snake_1 + snake_2
     end
   end
 ```
+???
+просто аналог this
 ---
 # Class methods
 ```ruby
@@ -287,6 +316,10 @@ snake_3 = snake_1 + snake_2
   Snake.description # => 'SNAAAAKESSS'
   Snake.normal_description # => 'Snakes ...'
 ```
+???
+просто разный синтаксис. self тут Snake
+___
+но если что class << пишет в синглтон класс класса (слайд с рисуночком)
 ---
 # Class variables
 ```ruby
@@ -304,6 +337,8 @@ snake_3 = snake_1 + snake_2
   Snake.new.all_count # => 1
   Snake.new.all_count # => 2
 ```
+???
+статическая переменная и инстансы имеют к ней доступ
 ---
 # Class instance variables
 ```ruby
@@ -327,7 +362,8 @@ snake_3 = snake_1 + snake_2
   snake.all_count # => nil
   Snake.count # => 1
 ```
-
+???
+а это переменная имено класса как обьекта. она его. и инстансы ее не видят
 ---
 # Class constants
 ```ruby
@@ -366,6 +402,8 @@ snake_3 = snake_1 + snake_2
   # NoMethodError: private method `set_defaults'
   # called for #<Snake:0x00000001d29b90 @length=2>
 ```
+???
+ну да initialize приватный.. он же вызывается другим методом так что всё ок
 ---
 # Visibility protected
 ```ruby
@@ -399,7 +437,6 @@ snake_3 = snake_1 + snake_2
 
 ```
 
-
 ---
 # Inheritance
 
@@ -424,6 +461,10 @@ class LazySnake < Snake
   end
 end
 ```
+???
+множественого наследования нет
+___
+есть миксины
 ---
 # Inheritance example
 ```ruby
@@ -446,6 +487,10 @@ end
 lazy = LazySnake.new(2)
 lazy.length # => 3
 ```
+???
+по умалчанию супер свхатит теже аргументы что и метод где он дергается
+___
+но можно указать другие аргументы
 ---
 # Inheritance
 ## class variables
@@ -468,6 +513,8 @@ end
 
 B.value # => 3
 ```
+???
+расшареная
 ---
 # Inheritance
 ## constants
@@ -487,6 +534,8 @@ B::NUM = 3
 A::NUM # => 2
 B::NUM # => 3
 ```
+???
+а константы везде свои
 ---
 # Singleton methods
 ```ruby
@@ -507,6 +556,8 @@ class << Snake
   end
 end
 ```
+???
+same shit and eigenclass
 ---
 # Custom behaviour of instance
 ```ruby
@@ -526,6 +577,12 @@ snake.name # => David
 another = Snake.new
 another.name # => NoMethodError: undefined method 'name'
 ```
+???
+class << snake - это запись в eigenclass
+___
+обьекты в руби не хранят методы, методы хранятся в другом месте
+___
+обьекты хранят состояние. inspect тому пример
 ---
 # Module
 ```ruby
@@ -543,7 +600,12 @@ snake = Snake.new
 snake.hi
 # 'HI!!!!'
 ```
+???
+комната в которой куча хлама
+___
+разкладываем хлам по коробочкам (модулям)
 ---
+
 # Module constants
 ```ruby
 module M
@@ -564,6 +626,8 @@ end
 M.constants # => [:C, :Y]
 ```
 ---
+class: small
+
 # Constants lookup order
 ```ruby
 module Kernel
@@ -612,6 +676,10 @@ module B
   end
 end
 ```
+???
+два простых модуля для обьяснения
+___
+и вобще в модули можно всунуть все что угодно
 ---
 # Include and extend
 ```ruby
@@ -629,6 +697,10 @@ Test.b # 'b'
 test.extend(B)
 test.b # 'b'
 ```
+???
+include -добавляет содержимое модуля для инстансов которые будут сделаны
+___
+exntend - добавляет содержимое для текущего обьекта
 ---
 # Include and extend and method lookup
 ![Lookup](img/lookup.png)
@@ -666,6 +738,10 @@ A test exception.
 # ["test.rb:2:in '<main>'"]
 # Ensuring execution
 ```
+???
+ensure - всегда вызывается
+___
+пример - закрыть файл
 ---
 # Exceptions else
 ```ruby
@@ -683,6 +759,10 @@ end
 # Executes if there is no exception
 # Ensuring execution
 ```
+???
+else - если нет исключения
+___
+пример - вывод радосного сообщения
 ---
 # Throw and catch
 ```ruby
@@ -702,6 +782,8 @@ try(4)
 # 1
 # 4
 ```
+???
+вылезти из глубокой вложености
 
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-0.5.9.min.js" type="text/javascript">
